@@ -1,6 +1,4 @@
 from uuid import uuid4
-import uuid
-
 import stripe
 
 from django.db import models
