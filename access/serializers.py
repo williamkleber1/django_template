@@ -88,10 +88,11 @@ class PasswordRecoveryEmailSerializer(serializers.ModelSerializer):
     class Meta:
         model = PasswordRecoveryEmail
         fields = (
-            # TODO: Replace the following with actual field names to expose
             "id",
-            "email",
-            "sent_at",
+            "name",
+            "body",
+            "subject",
+            "email_adress",
         )
 
 
