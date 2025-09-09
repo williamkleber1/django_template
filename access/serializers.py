@@ -90,7 +90,7 @@ class PasswordRecoveryEmailSerializer(serializers.ModelSerializer):
         fields = (
             "id",
             "name",
-            "body", 
+            "body",
             "subject",
             "email_adress",
         )
