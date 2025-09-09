@@ -121,7 +121,7 @@ class PasswordRecoveryEmail(models.Model):
     name = models.CharField('Name', max_length=100)
     body = models.TextField('Body')
     subject = models.CharField('Subject', max_length=200)
-    email_adress = models.EmailField('Adress', max_length=200)
+    email_address = models.EmailField('Address', max_length=200)
 
     def __str__(self):
         return self.name
