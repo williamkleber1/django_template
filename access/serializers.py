@@ -86,15 +86,16 @@ class LoggedDeviceSerializer(serializers.ModelSerializer):
     class Meta:
         model = LoggedDevice
         fields = '__all__'
-        read_only_fields = ('id', 'created', 'updated', 'last_login_at')
+        read_only_fields = ('id', 'created', 'updated', 'last_login_at', 'user')
 
     def validate(self, attrs):
-        user = attrs.get('user')
+        # Get user from context (set by the view)
+        user = self.context['request'].user if 'request' in self.context else None
         device_type = attrs.get('device_type')
         device_name = attrs.get('device_name')
         
         # Check for existing device with same user, type, and name
-        if LoggedDevice.objects.filter(
+        if user and LoggedDevice.objects.filter(
             user=user, device_type=device_type, device_name=device_name
         ).exists():
             raise serializers.ValidationError(
