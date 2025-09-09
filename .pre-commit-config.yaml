@@ -1,0 +1,46 @@
+repos:
+  # Local tools already installed
+  - repo: local
+    hooks:
+      # Python code formatting with Black
+      - id: black
+        name: Black
+        entry: black
+        language: system
+        types: [python]
+
+      # Import sorting with isort
+      - id: isort
+        name: isort
+        entry: isort
+        language: system
+        types: [python]
+
+      # Python linting with flake8
+      - id: flake8
+        name: flake8
+        entry: flake8
+        language: system
+        types: [python]
+
+  # General pre-commit hooks
+  - repo: https://github.com/pre-commit/pre-commit-hooks
+    rev: v5.0.0
+    hooks:
+      - id: trailing-whitespace
+      - id: end-of-file-fixer
+      - id: check-yaml
+        exclude: ^k8s/
+      - id: check-added-large-files
+      - id: check-merge-conflict
+
+  # Run Django tests before commit
+  - repo: local
+    hooks:
+      - id: django-tests
+        name: Django Tests
+        entry: ./scripts/run_tests.sh
+        language: system
+        types: [python]
+        pass_filenames: false
+        always_run: true

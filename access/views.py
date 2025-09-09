@@ -1,16 +1,25 @@
-from rest_framework import viewsets, status, permissions
+from rest_framework import permissions, status, viewsets
 from rest_framework.decorators import action
 from rest_framework.response import Response
-from rest_framework_simplejwt.views import TokenObtainPairView, TokenRefreshView
 from rest_framework_simplejwt.serializers import TokenObtainPairSerializer
+from rest_framework_simplejwt.views import TokenObtainPairView, TokenRefreshView
+
 from .models import (
-    CustomUserModel, ResetPasswordControl, PasswordRecoveryEmail,
-    EmailConfirmationControl, PreRegister, LoggedDevice
+    CustomUserModel,
+    EmailConfirmationControl,
+    LoggedDevice,
+    PasswordRecoveryEmail,
+    PreRegister,
+    ResetPasswordControl,
 )
 from .serializers import (
-    CustomUserSerializer, CustomUserListSerializer, ResetPasswordControlSerializer,
-    PasswordRecoveryEmailSerializer, EmailConfirmationControlSerializer,
-    PreRegisterSerializer, LoggedDeviceSerializer
+    CustomUserListSerializer,
+    CustomUserSerializer,
+    EmailConfirmationControlSerializer,
+    LoggedDeviceSerializer,
+    PasswordRecoveryEmailSerializer,
+    PreRegisterSerializer,
+    ResetPasswordControlSerializer,
 )
 
 
@@ -19,8 +28,8 @@ class CustomTokenObtainPairSerializer(TokenObtainPairSerializer):
     def get_token(cls, user):
         token = super().get_token(user)
         # Add custom claims
-        token['email'] = user.email
-        token['username'] = user.username
+        token["email"] = user.email
+        token["username"] = user.username
         return token
 
 
@@ -33,24 +42,24 @@ class CustomUserViewSet(viewsets.ModelViewSet):
     permission_classes = [permissions.IsAuthenticated]
 
     def get_serializer_class(self):
-        if self.action == 'list':
+        if self.action == "list":
             return CustomUserListSerializer
         return CustomUserSerializer
 
     def get_permissions(self):
-        if self.action == 'create':
+        if self.action == "create":
             permission_classes = [permissions.AllowAny]
         else:
             permission_classes = [permissions.IsAuthenticated]
         return [permission() for permission in permission_classes]
 
-    @action(detail=False, methods=['get'], url_path='me')
+    @action(detail=False, methods=["get"], url_path="me")
     def current_user(self, request):
         """Get current user details"""
         serializer = self.get_serializer(request.user)
         return Response(serializer.data)
 
-    @action(detail=False, methods=['put', 'patch'], url_path='me/update')
+    @action(detail=False, methods=["put", "patch"], url_path="me/update")
     def update_current_user(self, request):
         """Update current user"""
         serializer = self.get_serializer(request.user, data=request.data, partial=True)
@@ -83,7 +92,7 @@ class PreRegisterViewSet(viewsets.ModelViewSet):
     serializer_class = PreRegisterSerializer
 
     def get_permissions(self):
-        if self.action == 'create':
+        if self.action == "create":
             permission_classes = [permissions.AllowAny]
         else:
             permission_classes = [permissions.IsAuthenticated]
@@ -103,9 +112,9 @@ class LoggedDeviceViewSet(viewsets.ModelViewSet):
         """Auto-assign current user when creating device"""
         serializer.save(user=self.request.user)
 
-    @action(detail=True, methods=['post'])
+    @action(detail=True, methods=["post"])
     def update_login(self, request, pk=None):
         """Update last login time for device"""
         device = self.get_object()
         device.update_last_login()
-        return Response({'message': 'Login time updated'}, status=status.HTTP_200_OK)
+        return Response({"message": "Login time updated"}, status=status.HTTP_200_OK)

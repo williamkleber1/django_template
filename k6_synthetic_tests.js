@@ -143,7 +143,7 @@ function testUserAuthentication() {
 function testProtectedEndpoints(headers) {
   // Test getting current user
   const currentUserResponse = http.get(`${BASE_URL}/api/access/users/me/`, { headers });
-  
+
   check(currentUserResponse, {
     'current user status is 200': (r) => r.status === 200,
     'current user has email': (r) => JSON.parse(r.body).email === 'k6test@example.com',
@@ -151,7 +151,7 @@ function testProtectedEndpoints(headers) {
 
   // Test listing users
   const usersListResponse = http.get(`${BASE_URL}/api/access/users/`, { headers });
-  
+
   check(usersListResponse, {
     'users list status is 200': (r) => r.status === 200,
     'users list has results': (r) => JSON.parse(r.body).results !== undefined,
@@ -199,7 +199,7 @@ function testLoggedDevicesCRUD(headers) {
 
     // Read logged device
     const readResponse = http.get(`${BASE_URL}/api/access/logged-devices/${deviceId}/`, { headers });
-    
+
     check(readResponse, {
       'device read status is 200': (r) => r.status === 200,
       'device read response has device_name': (r) => JSON.parse(r.body).device_name === devicePayload.device_name,
@@ -218,7 +218,7 @@ function testLoggedDevicesCRUD(headers) {
 
     // Delete logged device
     const deleteResponse = http.del(`${BASE_URL}/api/access/logged-devices/${deviceId}/`, { headers });
-    
+
     check(deleteResponse, {
       'device deletion status is 204': (r) => r.status === 204,
     });

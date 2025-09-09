@@ -1,0 +1,33 @@
+[flake8]
+max-line-length = 88
+extend-ignore =
+    # E203: whitespace before ':' (conflicts with black)
+    E203,
+    # W503: line break before binary operator (conflicts with black)
+    W503,
+exclude =
+    migrations,
+    __pycache__,
+    .git,
+    .venv,
+    venv,
+    .tox,
+    dist,
+    build,
+    *.egg,
+    k8s,
+per-file-ignores =
+    # Ignore import errors in settings and __init__ files
+    */settings.py:F401,E501,E402
+    */__init__.py:F401
+    # Allow longer lines in manage.py
+    manage.py:E501
+    # Ignore unused imports in test files (might be used in future)
+    */tests.py:F401
+    # Ignore all issues in migration files
+    */migrations/*:E501,F401,E302,W292
+    # Ignore unused imports in views and models (common in Django)
+    */views.py:F401
+    */models.py:F401
+    # Ignore unused imports in admin files (common pattern)
+    */admin.py:F401
