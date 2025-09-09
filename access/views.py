@@ -1,9 +1,9 @@
+from drf_spectacular.utils import extend_schema, extend_schema_view
 from rest_framework import permissions, status, viewsets
 from rest_framework.decorators import action
 from rest_framework.response import Response
 from rest_framework_simplejwt.serializers import TokenObtainPairSerializer
 from rest_framework_simplejwt.views import TokenObtainPairView, TokenRefreshView
-from drf_spectacular.utils import extend_schema, extend_schema_view
 
 from .models import (
     CustomUserModel,
@@ -27,10 +27,11 @@ from .serializers import (
 class CustomTokenObtainPairSerializer(TokenObtainPairSerializer):
     """
     Custom JWT token serializer that adds additional user information to the token payload.
-    
+
     Extends the default TokenObtainPairSerializer to include user email and username
     in the JWT token claims for easier client-side user identification.
     """
+
     @classmethod
     def get_token(cls, user):
         token = super().get_token(user)
@@ -43,10 +44,11 @@ class CustomTokenObtainPairSerializer(TokenObtainPairSerializer):
 class CustomTokenObtainPairView(TokenObtainPairView):
     """
     Enhanced JWT token obtain view with custom user information.
-    
+
     Provides JWT authentication tokens that include additional user data
     in the token payload for improved client-side functionality.
     """
+
     serializer_class = CustomTokenObtainPairSerializer
 
 
@@ -54,44 +56,44 @@ class CustomTokenObtainPairView(TokenObtainPairView):
     list=extend_schema(
         summary="List all users",
         description="Retrieve a paginated list of all users in the system. Requires authentication.",
-        tags=["Users"]
+        tags=["Users"],
     ),
     create=extend_schema(
         summary="Create new user",
         description="Register a new user account. This endpoint allows anonymous access for user registration.",
-        tags=["Users"]
+        tags=["Users"],
     ),
     retrieve=extend_schema(
         summary="Get user details",
         description="Retrieve detailed information about a specific user by their ID.",
-        tags=["Users"]
+        tags=["Users"],
     ),
     update=extend_schema(
         summary="Update user",
         description="Update user information. Only authenticated users can update their own profile.",
-        tags=["Users"]
+        tags=["Users"],
     ),
     partial_update=extend_schema(
         summary="Partially update user",
         description="Partially update user information with PATCH method.",
-        tags=["Users"]
+        tags=["Users"],
     ),
     destroy=extend_schema(
         summary="Delete user",
         description="Delete a user account. Requires appropriate permissions.",
-        tags=["Users"]
+        tags=["Users"],
     ),
 )
 class CustomUserViewSet(viewsets.ModelViewSet):
     """
     User management endpoints for registration, authentication, and profile management.
-    
+
     This ViewSet provides comprehensive user management functionality including:
     - User registration (anonymous access)
     - User profile retrieval and updates (authenticated access)
     - Current user information endpoint
     - User list for administrative purposes
-    
+
     The user model includes support for:
     - Email-based authentication
     - Avatar/profile picture upload
@@ -100,6 +102,7 @@ class CustomUserViewSet(viewsets.ModelViewSet):
     - Email confirmation workflow
     - Device tracking and management
     """
+
     queryset = CustomUserModel.objects.all()
     permission_classes = [permissions.IsAuthenticated]
 
@@ -118,7 +121,7 @@ class CustomUserViewSet(viewsets.ModelViewSet):
     @extend_schema(
         summary="Get current user profile",
         description="Retrieve the profile information of the currently authenticated user.",
-        tags=["Users"]
+        tags=["Users"],
     )
     @action(detail=False, methods=["get"], url_path="me")
     def current_user(self, request):
@@ -129,7 +132,7 @@ class CustomUserViewSet(viewsets.ModelViewSet):
     @extend_schema(
         summary="Update current user profile",
         description="Update the profile information of the currently authenticated user.",
-        tags=["Users"]
+        tags=["Users"],
     )
     @action(detail=False, methods=["put", "patch"], url_path="me/update")
     def update_current_user(self, request):
@@ -145,26 +148,27 @@ class CustomUserViewSet(viewsets.ModelViewSet):
     list=extend_schema(
         summary="List password reset requests",
         description="Retrieve all password reset control records.",
-        tags=["Password Management"]
+        tags=["Password Management"],
     ),
     create=extend_schema(
         summary="Create password reset request",
         description="Create a new password reset request for a user.",
-        tags=["Password Management"]
+        tags=["Password Management"],
     ),
     retrieve=extend_schema(
         summary="Get password reset request",
         description="Retrieve details of a specific password reset request.",
-        tags=["Password Management"]
+        tags=["Password Management"],
     ),
 )
 class ResetPasswordControlViewSet(viewsets.ModelViewSet):
     """
     Password reset control management.
-    
+
     Handles password reset requests including creation, tracking, and validation
     of password reset tokens and emails.
     """
+
     queryset = ResetPasswordControl.objects.all()
     serializer_class = ResetPasswordControlSerializer
     permission_classes = [permissions.IsAuthenticated]
@@ -174,21 +178,22 @@ class ResetPasswordControlViewSet(viewsets.ModelViewSet):
     list=extend_schema(
         summary="List password recovery emails",
         description="Retrieve all password recovery email templates.",
-        tags=["Password Management"]
+        tags=["Password Management"],
     ),
     create=extend_schema(
         summary="Create password recovery email",
         description="Create a new password recovery email template.",
-        tags=["Password Management"]
+        tags=["Password Management"],
     ),
 )
 class PasswordRecoveryEmailViewSet(viewsets.ModelViewSet):
     """
     Password recovery email template management.
-    
+
     Manages email templates used for password recovery communications,
     including subject lines, body content, and recipient information.
     """
+
     queryset = PasswordRecoveryEmail.objects.all()
     serializer_class = PasswordRecoveryEmailSerializer
     permission_classes = [permissions.IsAuthenticated]
@@ -198,20 +203,21 @@ class PasswordRecoveryEmailViewSet(viewsets.ModelViewSet):
     list=extend_schema(
         summary="List email confirmations",
         description="Retrieve all email confirmation control records.",
-        tags=["Email Management"]
+        tags=["Email Management"],
     ),
     create=extend_schema(
         summary="Create email confirmation",
         description="Create a new email confirmation request.",
-        tags=["Email Management"]
+        tags=["Email Management"],
     ),
 )
 class EmailConfirmationControlViewSet(viewsets.ModelViewSet):
     """
     Email confirmation control management.
-    
+
     Handles email confirmation requests and tracking for user email verification.
     """
+
     queryset = EmailConfirmationControl.objects.all()
     serializer_class = EmailConfirmationControlSerializer
     permission_classes = [permissions.IsAuthenticated]
@@ -221,21 +227,22 @@ class EmailConfirmationControlViewSet(viewsets.ModelViewSet):
     list=extend_schema(
         summary="List pre-registrations",
         description="Retrieve all pre-registration records.",
-        tags=["Registration"]
+        tags=["Registration"],
     ),
     create=extend_schema(
         summary="Create pre-registration",
         description="Create a new pre-registration entry. Allows anonymous access for email collection.",
-        tags=["Registration"]
+        tags=["Registration"],
     ),
 )
 class PreRegisterViewSet(viewsets.ModelViewSet):
     """
     Pre-registration management for email collection.
-    
+
     Allows collection of email addresses from interested users before
     full registration is available. Useful for waitlists and early access.
     """
+
     queryset = PreRegister.objects.all()
     serializer_class = PreRegisterSerializer
 
@@ -251,27 +258,28 @@ class PreRegisterViewSet(viewsets.ModelViewSet):
     list=extend_schema(
         summary="List user devices",
         description="Retrieve all logged devices for the current user.",
-        tags=["Device Management"]
+        tags=["Device Management"],
     ),
     create=extend_schema(
         summary="Register new device",
         description="Register a new device for the current user.",
-        tags=["Device Management"]
+        tags=["Device Management"],
     ),
     retrieve=extend_schema(
         summary="Get device details",
         description="Retrieve details of a specific device.",
-        tags=["Device Management"]
+        tags=["Device Management"],
     ),
 )
 class LoggedDeviceViewSet(viewsets.ModelViewSet):
     """
     Device management for user login tracking.
-    
+
     Tracks and manages devices that users have logged in from,
     including device type (mobile/desktop), device name, and
     last login timestamps.
     """
+
     queryset = LoggedDevice.objects.all()
     serializer_class = LoggedDeviceSerializer
     permission_classes = [permissions.IsAuthenticated]
@@ -287,7 +295,7 @@ class LoggedDeviceViewSet(viewsets.ModelViewSet):
     @extend_schema(
         summary="Update device login time",
         description="Update the last login timestamp for a specific device.",
-        tags=["Device Management"]
+        tags=["Device Management"],
     )
     @action(detail=True, methods=["post"])
     def update_login(self, request, pk=None):
