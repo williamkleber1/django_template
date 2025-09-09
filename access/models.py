@@ -107,7 +107,7 @@ class CustomUserModel(AbstractUser, PermissionsMixin):
 
 class ResetPasswordControl(models.Model):
     request_id = models.CharField(max_length=64, default=uuid4, primary_key=True, editable=False)
-    email= models.EmailField(max_length=200, unique=False, null=False, blank=False)
+    email = models.EmailField(max_length=200, unique=False, null=False, blank=False)
     date = models.DateTimeField(auto_now_add=True)
 
     def __str__(self):
