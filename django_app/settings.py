@@ -43,6 +43,7 @@ INSTALLED_APPS = [
     "django_prometheus",
     "rest_framework",
     "rest_framework_simplejwt",
+    "drf_spectacular",
     "general",
     "access",
     "core",
@@ -189,6 +190,7 @@ REST_FRAMEWORK = {
     ],
     "DEFAULT_PAGINATION_CLASS": "rest_framework.pagination.PageNumberPagination",
     "PAGE_SIZE": 20,
+    "DEFAULT_SCHEMA_CLASS": "drf_spectacular.openapi.AutoSchema",
 }
 
 # JWT Settings
@@ -219,4 +221,46 @@ SIMPLE_JWT = {
     "SLIDING_TOKEN_REFRESH_EXP_CLAIM": "refresh_exp",
     "SLIDING_TOKEN_LIFETIME": timedelta(minutes=5),
     "SLIDING_TOKEN_REFRESH_LIFETIME": timedelta(days=1),
+}
+
+# Spectacular settings for API documentation
+SPECTACULAR_SETTINGS = {
+    "TITLE": "Django Template API",
+    "DESCRIPTION": "A comprehensive Django REST API template with authentication, user management, task processing, and monitoring capabilities.",
+    "VERSION": "1.0.0",
+    "SERVE_INCLUDE_SCHEMA": False,
+    "COMPONENT_SPLIT_REQUEST": True,
+    "COMPONENT_NO_READ_ONLY_REQUIRED": True,
+    "SWAGGER_UI_SETTINGS": {
+        "deepLinking": True,
+        "persistAuthorization": True,
+        "displayOperationId": True,
+        "displayRequestDuration": True,
+    },
+    "SWAGGER_UI_DIST": "SIDECAR",  # Use bundled static files instead of CDN
+    "SWAGGER_UI_FAVICON_HREF": None,
+    "REDOC_DIST": "SIDECAR",  # Use bundled static files instead of CDN
+    "REDOC_UI_SETTINGS": {
+        "hideDownloadButton": False,
+        "hideHostname": False,
+        "hideLoading": False,
+        "hideSchemaPattern": False,
+        "hideSourceCode": False,
+        "hideSingleRequestSampleTab": False,
+        "hideRequestPayloadSample": False,
+        "hideResponseSample": False,
+    },
+    "SCHEMA_PATH_PREFIX": "/api/",
+    "SCHEMA_PATH_PREFIX_TRIM": True,
+    "SERVERS": [
+        {"url": "http://localhost:8000", "description": "Local development server"},
+        {"url": "https://api.example.com", "description": "Production server"},
+    ],
+    "SECURITY": [
+        {
+            "type": "http",
+            "scheme": "bearer",
+            "bearerFormat": "JWT",
+        }
+    ],
 }
