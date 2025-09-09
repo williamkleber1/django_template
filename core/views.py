@@ -1,14 +1,15 @@
 import json
 
+from drf_spectacular.openapi import OpenApiResponse
+from drf_spectacular.utils import OpenApiParameter, extend_schema
+from rest_framework.decorators import api_view, permission_classes
+from rest_framework.permissions import AllowAny
+from rest_framework.response import Response
+
 from django.http import JsonResponse
 from django.shortcuts import render
 from django.views.decorators.csrf import csrf_exempt
 from django.views.decorators.http import require_http_methods
-from drf_spectacular.utils import extend_schema, OpenApiParameter
-from drf_spectacular.openapi import OpenApiResponse
-from rest_framework.decorators import api_view, permission_classes
-from rest_framework.permissions import AllowAny
-from rest_framework.response import Response
 
 from .tasks import add_numbers, long_running_task, process_data
 
@@ -26,20 +27,20 @@ from .tasks import add_numbers, long_running_task, process_data
                     "endpoints": {
                         "tasks": "/tasks/",
                         "health": "/health/",
-                        "metrics": "/metrics"
-                    }
+                        "metrics": "/metrics",
+                    },
                 }
-            ]
+            ],
         )
     },
-    tags=["Core"]
+    tags=["Core"],
 )
-@api_view(['GET'])
+@api_view(["GET"])
 @permission_classes([AllowAny])
 def home(request):
     """
     API Home endpoint.
-    
+
     Returns basic information about the API including status and available endpoints.
     This endpoint is publicly accessible and doesn't require authentication.
     """
@@ -64,22 +65,17 @@ def home(request):
     responses={
         200: OpenApiResponse(
             description="Service health status",
-            examples=[
-                {
-                    "status": "healthy",
-                    "service": "django-app"
-                }
-            ]
+            examples=[{"status": "healthy", "service": "django-app"}],
         )
     },
-    tags=["Core"]
+    tags=["Core"],
 )
-@api_view(['GET'])
+@api_view(["GET"])
 @permission_classes([AllowAny])
 def health_check(request):
     """
     Health check endpoint.
-    
+
     Used by monitoring systems and load balancers to verify that the service
     is running and responding to requests.
     """
@@ -96,26 +92,26 @@ def health_check(request):
                 "type": {
                     "type": "string",
                     "enum": ["add", "long_running", "process_data"],
-                    "description": "Type of task to execute"
+                    "description": "Type of task to execute",
                 },
                 "x": {
                     "type": "integer",
-                    "description": "First number for addition (used with 'add' type)"
+                    "description": "First number for addition (used with 'add' type)",
                 },
                 "y": {
-                    "type": "integer", 
-                    "description": "Second number for addition (used with 'add' type)"
+                    "type": "integer",
+                    "description": "Second number for addition (used with 'add' type)",
                 },
                 "duration": {
                     "type": "integer",
-                    "description": "Duration in seconds for long running task"
+                    "description": "Duration in seconds for long running task",
                 },
                 "data": {
                     "type": "string",
-                    "description": "Data to process (used with 'process_data' type)"
-                }
+                    "description": "Data to process (used with 'process_data' type)",
+                },
             },
-            "required": ["type"]
+            "required": ["type"],
         }
     },
     responses={
@@ -125,26 +121,26 @@ def health_check(request):
                 {
                     "task_id": "550e8400-e29b-41d4-a716-446655440000",
                     "task_type": "add_numbers",
-                    "parameters": {"x": 5, "y": 3}
+                    "parameters": {"x": 5, "y": 3},
                 }
-            ]
+            ],
         ),
         400: OpenApiResponse(description="Invalid task type or JSON"),
-        500: OpenApiResponse(description="Internal server error")
+        500: OpenApiResponse(description="Internal server error"),
     },
-    tags=["Tasks"]
+    tags=["Tasks"],
 )
 @csrf_exempt
 @require_http_methods(["POST"])
 def create_task(request):
     """
     Create and execute Celery tasks.
-    
+
     This endpoint allows you to create different types of background tasks:
     - 'add': Adds two numbers together
     - 'long_running': Simulates a long-running process
     - 'process_data': Processes arbitrary string data
-    
+
     All tasks are executed asynchronously using Celery and return a task ID
     that can be used to check the task status.
     """
@@ -204,7 +200,7 @@ def create_task(request):
             description="The UUID of the task to check",
             required=True,
             type=str,
-            location=OpenApiParameter.PATH
+            location=OpenApiParameter.PATH,
         )
     ],
     responses={
@@ -215,26 +211,26 @@ def create_task(request):
                     "task_id": "550e8400-e29b-41d4-a716-446655440000",
                     "status": "SUCCESS",
                     "result": 8,
-                    "error": None
+                    "error": None,
                 }
-            ]
+            ],
         )
     },
-    tags=["Tasks"]
+    tags=["Tasks"],
 )
 @require_http_methods(["GET"])
 def task_status(request, task_id):
     """
     Check task status and results.
-    
+
     Retrieves the current status of a Celery task including:
     - PENDING: Task is waiting to be processed
     - STARTED: Task has been started
-    - SUCCESS: Task completed successfully 
+    - SUCCESS: Task completed successfully
     - FAILURE: Task failed with an error
     - RETRY: Task is being retried
     - REVOKED: Task was revoked/cancelled
-    
+
     For successful tasks, the result will contain the task output.
     For failed tasks, the error field will contain the error message.
     """

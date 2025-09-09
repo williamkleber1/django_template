@@ -1058,15 +1058,62 @@ CELERY_WORKER_PREFETCH_MULTIPLIER = 1
 CELERY_TASK_ACKS_LATE = True
 ```
 
+### Avisos Comuns do flake8
+
+Alguns avisos do flake8 são comuns em projetos Django/DRF e são aceitáveis:
+
+```bash
+# E501 line too long - Comum em decorators DRF e docstrings
+./access/views.py:29:89: E501 line too long (91 > 88 characters)
+
+# Soluções:
+# 1. Quebrar linha quando possível
+@extend_schema(
+    summary="Descrição curta",
+    description="Descrição mais longa aqui"
+)
+
+# 2. Usar noqa para casos específicos
+long_description = "String muito longa que não pode ser quebrada"  # noqa: E501
+
+# 3. Configurar exceções no .flake8 para patterns Django
+```
+
+### Script de Validação
+
+Use o script de validação para verificar se está seguindo as diretrizes:
+
+```bash
+# Executar validação completa
+./scripts/validate_instructions.sh
+
+# Saída esperada:
+# ✅ Pre-commit configurado
+# ✅ Todos os testes passaram (27/27)
+# ✅ Formatação OK
+# ✅ Imports organizados
+# ✅ Instruções do Copilot disponíveis
+# ✅ Diretório de documentação existe
+```
+
 ## 📝 Conclusão
 
 Este documento serve como guia completo para desenvolvimento com GitHub Copilot neste template Django. Todas as práticas documentadas foram validadas através dos PRs anteriores e garantem:
 
-- ✅ **Qualidade de código** com pre-commit hooks
-- ✅ **Testes abrangentes** com cobertura completa
+- ✅ **Qualidade de código** com pre-commit hooks automáticos
+- ✅ **Testes abrangentes** com 27/27 testes passando
 - ✅ **Monitoramento robusto** com Prometheus/Grafana
 - ✅ **Deploy automatizado** com Kubernetes e GitHub Actions
 - ✅ **Documentação atualizada** com Swagger/OpenAPI
+- ✅ **Linting configurado** com Black, flake8 e isort
+- ✅ **Script de validação** para verificar conformidade
+
+### Como Usar Este Documento
+
+1. **Para novos desenvolvimentos:** Siga os exemplos na seção "Exemplos de Desenvolvimento"
+2. **Para debugging:** Use a seção "Troubleshooting"
+3. **Para validação:** Execute `./scripts/validate_instructions.sh`
+4. **Para referência:** Consulte as seções específicas conforme necessário
 
 Para contribuições, sempre siga este documento e reference os PRs anteriores como exemplos de implementação.
 
@@ -1075,4 +1122,5 @@ Para contribuições, sempre siga este documento e reference os PRs anteriores c
 **Última atualização:** Baseado nos PRs #1-#5  
 **Versão Django:** 5.2.6  
 **Versão DRF:** 3.15.2  
-**Versão Celery:** 5.5.3
+**Versão Celery:** 5.5.3  
+**Testes:** 27/27 passando ✅
