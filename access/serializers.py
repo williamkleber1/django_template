@@ -63,7 +63,10 @@ class ResetPasswordControlSerializer(serializers.ModelSerializer):
 class PasswordRecoveryEmailSerializer(serializers.ModelSerializer):
     class Meta:
         model = PasswordRecoveryEmail
-        fields = '__all__'
+        fields = (
+            # TODO: Replace the following with actual field names to expose
+            'id', 'email', 'sent_at'
+        )
 
 
 class EmailConfirmationControlSerializer(serializers.ModelSerializer):
