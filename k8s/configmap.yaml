@@ -1,0 +1,30 @@
+apiVersion: v1
+kind: Namespace
+metadata:
+  name: django-app
+---
+apiVersion: v1
+kind: ConfigMap
+metadata:
+  name: django-config
+  namespace: django-app
+data:
+  DEBUG: "false"
+  ALLOWED_HOSTS: "django-service,localhost"
+  DB_ENGINE: "django.db.backends.postgresql"
+  DB_NAME: "django_app"
+  DB_USER: "postgres"
+  DB_HOST: "postgres-service"
+  DB_PORT: "5432"
+  CELERY_BROKER_URL: "amqp://guest:guest@rabbitmq-service:5672//"
+  CELERY_RESULT_BACKEND: "redis://redis-service:6379/0"
+---
+apiVersion: v1
+kind: Secret
+metadata:
+  name: django-secrets
+  namespace: django-app
+type: Opaque
+data:
+  SECRET_KEY: ZGphbmdvLWluc2VjdXJlLWhvcG1vd3g2KV91Jnk4eG1zdGRvITl1M3MoK2QpKXdmMCQmY2RmZzI9aXhwMzhoOHRn
+  DB_PASSWORD: cG9zdGdyZXM=
